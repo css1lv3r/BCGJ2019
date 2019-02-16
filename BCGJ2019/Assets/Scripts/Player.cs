@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
 
     }
 
-    void OnTriggerEnter2D(Collider2D)
+    void OnTriggerEnter2D(Collider2D col)
     {
 
     }
@@ -53,7 +53,10 @@ public class Player : MonoBehaviour
         float moveDirection = (Mathf.Atan2(-normalizedDirection.x, normalizedDirection.y)*Mathf.Rad2Deg);
         Debug.Log(moveDirection);
 
-        transform.rotation = Quaternion.Euler(0,0,moveDirection);
+        if (normalizedDirection != Vector2.zero) {
+            transform.rotation = Quaternion.Euler(0, 0, moveDirection);
+        }
+        
 
         //update animation
         animController.SetBool("isMoving",normalizedDirection!=Vector2.zero);
