@@ -6,9 +6,9 @@ public class Crater : MonoBehaviour
 {
     private float update;
     public bool isDry;
-    public int growth; // 0 for unplanted, 1 for immature plants, 2 for ready-to-harvest
+    private int growth; // 0 for unplanted, 1 for immature plants, 2 for ready-to-harvest
     public bool readyToHarvest;
-
+    public bool readyToPlant;
 
     // Start is called before the first frame update
     void Start()
@@ -22,8 +22,9 @@ public class Crater : MonoBehaviour
     {
         if (growth=1)
         {
-            growth++;
+            incGrowth();
         }
+        updateCraterStatus();
         updateSprite();      
     }
 
@@ -55,5 +56,31 @@ public class Crater : MonoBehaviour
             }
         }
         
+    }
+
+    // called in update AND when player interacts with readyToPlant crater
+    void incGrowth()
+    {
+        if (growth < 2)
+        {
+            growth++;
+        }
+    }
+
+    // to be called by other class when player interacts
+    void resetGrowth()
+    {
+        growth = 0;
+    }
+
+    void updateCraterStatus()
+    {
+        if (growth=0)
+        {
+            readyToPlant = true;
+        } else if (growth=2)
+        {
+            readyToHarvest = true;
+        }
     }
 }
