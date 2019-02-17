@@ -72,7 +72,7 @@ public class MenuButton : MonoBehaviour
             redPlayerPressed = true;
             Pulse();
         }
-        if (!isTriggeringCheck)
+        if (!isTriggeringCheck && !isTriggeringSuccess &&(bluePlayerPressed || redPlayerPressed))
         {
             isTriggeringCheck = true;
             StartCoroutine(WaitAndCheck());
@@ -104,6 +104,7 @@ public class MenuButton : MonoBehaviour
         if (bluePlayerIn && redPlayerIn && bluePlayerPressed && redPlayerPressed)
         {
             //if all true - success events
+            StartCoroutine(PlaySuccessSequence());
 
         }
         else if (bluePlayerIn && bluePlayerPressed && !(redPlayerIn && redPlayerPressed))
@@ -116,6 +117,7 @@ public class MenuButton : MonoBehaviour
             //red is early - reset red
             Reset(PlayerColor.Red);
         }
+        isTriggeringCheck = false;
         //if one player is in and pressed but other is out or hasn't pressed, reset early player
         //if nobody is in, do nothing
     }
@@ -129,6 +131,7 @@ public class MenuButton : MonoBehaviour
                 bluePlayerIn = false;
                 bluePlayerPressed = false;
                 MainMenu.Instance.bluePlayer.Reset();
+                
                 break;
             case PlayerColor.Red:
                 redPlayerIn = false;
@@ -138,11 +141,13 @@ public class MenuButton : MonoBehaviour
             default:
                 break;
         }
+        isTriggeringCheck = false;
         UpdateButtonColor();
     }
 
     IEnumerator PlaySuccessSequence()
     {
+        isTriggeringSuccess = true;
         particleObject.SetActive(true);
         //play audio
         //
