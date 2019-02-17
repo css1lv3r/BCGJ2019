@@ -5,6 +5,7 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     public GameObject asteroid;
+    public GameObject shadow;
     private int xPos;
     private int yPos;
     const float countdown = 10.0f;
@@ -15,6 +16,7 @@ public class Asteroid : MonoBehaviour
     {
         xPos = Random.Range(0, 1920);
         yPos = Random.Range(0, 1080);
+        Instantiate(shadow, new Vector3(xPos, yPos), Quaternion.identity);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
