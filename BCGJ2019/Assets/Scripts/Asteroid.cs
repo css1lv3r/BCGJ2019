@@ -4,51 +4,53 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
-    public GameObject asteroid;
-    public GameObject shadow;
-    private int xPos;
-    private int yPos;
     const float countdown = 10.0f;
     private float timer = 0.0f;
+    public SpriteRenderer sprite;
+    private Color shadowA;
 
     // Start is called before the first frame update
     void Start()
     {
-        xPos = Random.Range(0, 1920);
-        yPos = Random.Range(0, 1080);
-        Instantiate(shadow, new Vector3(xPos, yPos), Quaternion.identity);
+        sprite = GetComponent<SpriteRenderer>();
+        shadowA = sprite.color;
+        shadowA.a = 0f;
+        sprite.color = shadowA;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.SendMessage("Damage");
+            collision.gameObject.SendMessage("SuitHealth.set", 0);
         }
         
         if (collision.gameObject.tag == "Crater")
         {
-            collision.gameObject.SendMessage("SetPlant", false);
+            collision.gameObject.SendMessage("resetGrowth");
         }
-        
-        Destroy(gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
         timer += Time.deltaTime;
-
-        if ((countdown - timer) <= 1.5f)
+        if (timer > 10f && sprite.color.a < 1.0f)
         {
-            // play falling sound clip
+            float t = (timer - 10f) / countdown;
+            shadowA.a = (1.0f * t);
+            sprite.color = shadowA;
+        }
+
+        if (timer >= 18.5f)
+        {
             // AudioManager.instance.Play();
         }
-        if ((countdown - timer) <= 0.0f)
-        {
-            // Asteroid collides at point (xPos, yPos) 
-            Instantiate(asteroid, new Vector3(xPos, yPos), Quaternion.identity);
-        }
 
+        if (timer > 21f)
+        {
+            shadowA.a = 0f;
+            sprite.color = shadowA;
+        }
     }
 }

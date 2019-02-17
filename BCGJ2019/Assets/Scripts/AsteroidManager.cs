@@ -7,14 +7,11 @@ public class AsteroidManager : MonoBehaviour
     public static AsteroidManager instance = null;
     public float timer = 0.0f;
     public float countdown = 0.0f;
-    public Asteroid asteroid;
+    public GameObject asteroid;
 
     private void Awake()
     {
-        if (instance == null && instance != this)
-            Destroy(gameObject);
         instance = this;
-        DontDestroyOnLoad( gameObject );
     }
 
     // Start is called before the first frame update
@@ -25,7 +22,7 @@ public class AsteroidManager : MonoBehaviour
 
     void SetCountDown()
     {
-        float num = Random.Range(10.0f, 15.0f);
+        float num = 20.0f; // Random.Range(10.0f, 15.0f); commenting out for testing
         countdown = num;
     }
 
@@ -35,7 +32,9 @@ public class AsteroidManager : MonoBehaviour
         timer += Time.deltaTime;
         if (timer > countdown)
         {
-            asteroid = new Asteroid();
+            float xPos = Random.Range(-2.5f, 2.5f);
+            float yPos = Random.Range(-2.5f, 2.5f);
+            GameObject.Instantiate(asteroid,new Vector3(xPos,yPos,0), Quaternion.identity);
             timer = 0.0f;
             SetCountDown();
         }
