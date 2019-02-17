@@ -25,8 +25,12 @@ public class AudioManager : MonoBehaviour
     {
         source = GetComponent<AudioSource>();
         effectSource = GetComponent<AudioSource>();
-        // TODO Actually load 
-        clips = new AudioClip[] { };
+        // TODO: Actually load the sound
+        clips = new AudioClip[] {(AudioClip)Resources.Load(""),
+                                 (AudioClip)Resources.Load(""),
+                                 (AudioClip)Resources.Load(""),
+                                 (AudioClip)Resources.Load(""),
+                                 (AudioClip)Resources.Load(""),};
     }
 
     // Update is called once per frame
