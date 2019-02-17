@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public PlayerColor playerColor;
     public Animator animController;
     public Transform overlapPosition;
+    public GameObject ship;
 
     public float SuitHealth
     {
@@ -31,19 +32,36 @@ public class Player : MonoBehaviour
         }
     }
 
+    public float ShipFuelInventory
+    {
+        get { return shipFuelInventory; }
+        set
+        {
+            shipFuelInventory = value;
+            if (shipFuelInventory > 100) { suitHealth = 100; }
+            if (shipFuelInventory < 0) { suitHealth = 0; }
+        }
+    }
+
     //------------------------------
 
     const float slowSpeed = 10f;
     const float medSpeed = 20f;
     const float normalSpeed =50f;
 
-    const float lowThreshold = 30;
+    const float lowHealthThreshold = 30;
+    const float highFuelThreshold = 95;
 
-    const float drainSpeed = 1f;
+    const float suitDrainSpeed = 1f;
+    const float fuelDrainSpeed = 0.05f;
+    const float suitRechargeSpeed = 10f;
     //------------------------------
     private float suitHealth = 100f;
     private int fuelInventory;
+    private float shipFuelInventory = 20;
     private int maxInventoryCapacity = 5;
+    private bool isNearShip;
+
 
 
     Vector2 normalizedDirection;
@@ -60,6 +78,10 @@ public class Player : MonoBehaviour
     {
         //animController = gameObject.GetComponentInChildren<Animator>();
         allCraters = GameObject.FindGameObjectsWithTag("Crater");
+
+    }
+    void Start()
+    {
         UpdatePlayerValuesInUI();
     }
 
@@ -67,6 +89,12 @@ public class Player : MonoBehaviour
     void Update()
     {
         DrainHealth();
+        DrainShip();
+
+        if (checkNearShip())
+        {
+            TryRechargeSuit();
+        }
         //get movement
         normalizedDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
         //Debug.Log(normalizedDirection);
@@ -132,6 +160,28 @@ public class Player : MonoBehaviour
 
     public void TryToInteract()
     {
+        if (suitHealth > 0) {
+            //Try to interact with ship
+            TryToInteractWithCraters();
+            if (ship.GetComponent<Collider2D>().OverlapPoint(overlapPosition.position))
+            {
+                TryOffloadFuel();
+            }
+        }
+        
+
+        //Update UI
+        UpdatePlayerValuesInUI();
+        // Play Audio
+        // ????
+        //Try to interact with ship
+
+    }
+
+    //----------------------------------------------------------------------------------------------------
+
+    private void TryToInteractWithCraters()
+    {
         //Try to intereact with craters
         bool planted = false;
         bool harvested = false;
@@ -145,22 +195,20 @@ public class Player : MonoBehaviour
             harvested = harvested || (harvestResult > 0);
         }
         Debug.Log("Planted: " + planted + "\nHarvested: " + harvested);
-
-        //Update UI
-        UpdatePlayerValuesInUI();
-        // Play Audio
-        // ????
-        //Try to interact with ship
-
     }
 
-    //----------------------------------------------------------------------------------------------------
 
     private void DrainHealth()
     {
-        SuitHealth -= drainSpeed * (Time.deltaTime);
+        SuitHealth -= suitDrainSpeed * (Time.deltaTime);
         SceneManager.Instance.UpdatePlayerHealth(playerColor, SuitHealth);
         Debug.Log(suitHealth);
+    }
+
+    private void DrainShip()
+    {
+        ShipFuelInventory -= fuelDrainSpeed*Time.deltaTime;
+        SceneManager.Instance.UpdateShipFuel(playerColor, ShipFuelInventory);
     }
 
     private bool IsInCrater()
@@ -182,15 +230,30 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void TryOffloadFuel()
+    {
+        float availableSpace = 100 - ShipFuelInventory;
+        if (availableSpace > FuelInventory)
+        {
+            ShipFuelInventory += FuelInventory;
+            FuelInventory = 0;
+        }
+        else
+        {
+            ShipFuelInventory += availableSpace;
+            FuelInventory -= (int)availableSpace;
+        }
+    }
+
 
     private void UpdatePlayerValuesInUI()
     {
-        SceneManager.Instance.UpdatePlayerValues(playerColor, SuitHealth, FuelInventory, 50f);
+        SceneManager.Instance.UpdatePlayerValues(playerColor, SuitHealth, FuelInventory, ShipFuelInventory);
     }
 
     private float getCurrentSpeed()
     {
-        if (SuitHealth > lowThreshold)
+        if (SuitHealth > lowHealthThreshold)
         {
             return normalSpeed;
         }
@@ -199,6 +262,20 @@ public class Player : MonoBehaviour
             return medSpeed;
         }
         else return slowSpeed;
+    }
+
+    private bool checkNearShip()
+    {
+        return (ship.GetComponent<Collider2D>().OverlapPoint(transform.position));
+
+    }
+
+    private void TryRechargeSuit()
+    {
+        if (SuitHealth < 100)
+        {
+            SuitHealth += suitRechargeSpeed*Time.deltaTime;
+        }
     }
 }
 
