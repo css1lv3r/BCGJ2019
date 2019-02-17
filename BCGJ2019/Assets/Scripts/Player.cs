@@ -96,11 +96,11 @@ public class Player : MonoBehaviour
             TryRechargeSuit();
         }
         //get movement
-        normalizedDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
+        normalizedDirection = new Vector2(Input.GetAxis("Horizontal_"+(int)playerColor), Input.GetAxis("Vertical_"+(int)playerColor)).normalized;
         //Debug.Log(normalizedDirection);
 
         //get interact input
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetButtonDown("Interact_"+(int)playerColor))
         {
             UpdateOverlappingCraters();
             TryToInteract();
@@ -176,6 +176,14 @@ public class Player : MonoBehaviour
         // ????
         //Try to interact with ship
 
+    }
+
+    public void Injure()
+    {
+        if (SuitHealth > lowHealthThreshold)
+        {
+            SuitHealth = lowHealthThreshold;
+        }
     }
 
     //----------------------------------------------------------------------------------------------------
@@ -279,4 +287,4 @@ public class Player : MonoBehaviour
     }
 }
 
-public enum PlayerColor { Red, Blue};
+public enum PlayerColor {Blue, Red};
