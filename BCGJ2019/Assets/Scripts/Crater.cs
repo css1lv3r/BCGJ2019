@@ -13,7 +13,8 @@ public class Crater : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        readyToHarvest = false;
+        readyToPlant = true;
     
     }
 
@@ -78,9 +79,17 @@ public class Crater : MonoBehaviour
         if (growth=0)
         {
             readyToPlant = true;
-        } else if (growth=2)
+            readyToHarvest = false;
+        } else
         {
-            readyToHarvest = true;
-        }
+            readyToPlant = false;
+            if (growth=2)
+            {
+                readyToHarvest = true;
+            } else
+            {
+                readyToHarvest = false;
+            }
+        }       
     }
 }
