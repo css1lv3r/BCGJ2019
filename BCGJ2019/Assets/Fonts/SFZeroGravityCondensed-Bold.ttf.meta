@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 9c5b0b5e12fbb7547804f2c325102d18
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SF Zero Gravity Condensed
+  fontNames:
+  - SF Zero Gravity Condensed
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 71d96b8a76419854f980520bf3dc85cc, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
