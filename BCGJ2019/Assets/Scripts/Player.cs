@@ -20,13 +20,28 @@ public class Player : MonoBehaviour
         }
     }
 
+    public int FuelInventory
+    {
+        get { return fuelInventory; }
+        set
+        {
+            fuelInventory = value;
+            if (fuelInventory > maxInventoryCapacity) { fuelInventory = maxInventoryCapacity; }
+            if (fuelInventory < 0) { fuelInventory = 0; }
+        }
+    }
+
     //------------------------------
 
     const float slowSpeed = 10f;
     const float medSpeed = 20f;
     const float normalSpeed =50f;
+
+    const float lowThreshold = 30;
+
+    const float drainSpeed = 1f;
     //------------------------------
-    private float suitHealth;
+    private float suitHealth = 100f;
     private int fuelInventory;
     private int maxInventoryCapacity = 5;
 
@@ -45,12 +60,13 @@ public class Player : MonoBehaviour
     {
         //animController = gameObject.GetComponentInChildren<Animator>();
         allCraters = GameObject.FindGameObjectsWithTag("Crater");
+        UpdatePlayerValuesInUI();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        DrainHealth();
         //get movement
         normalizedDirection = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
         //Debug.Log(normalizedDirection);
@@ -61,6 +77,7 @@ public class Player : MonoBehaviour
             UpdateOverlappingCraters();
             TryToInteract();
         }
+        
         
 
     }
@@ -92,7 +109,7 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         //move character
-        Vector3 adjustedMoveVector = new Vector3(normalizedDirection.x, normalizedDirection.y, 0) * Time.fixedDeltaTime*normalSpeed;
+        Vector3 adjustedMoveVector = new Vector3(normalizedDirection.x, normalizedDirection.y, 0) * Time.fixedDeltaTime*getCurrentSpeed();
         gameObject.GetComponent<Rigidbody2D>().velocity = adjustedMoveVector ;
         //rotate character
         float moveDirection = (Mathf.Atan2(-normalizedDirection.x, normalizedDirection.y)*Mathf.Rad2Deg);
@@ -115,6 +132,7 @@ public class Player : MonoBehaviour
 
     public void TryToInteract()
     {
+        //Try to intereact with craters
         bool planted = false;
         bool harvested = false;
         foreach (GameObject crater in overlappingCraters)
@@ -127,13 +145,23 @@ public class Player : MonoBehaviour
             harvested = harvested || (harvestResult > 0);
         }
         Debug.Log("Planted: " + planted + "\nHarvested: " + harvested);
+
         //Update UI
-        //SceneManager.Instance;
+        UpdatePlayerValuesInUI();
         // Play Audio
         // ????
+        //Try to interact with ship
+
     }
-   
+
     //----------------------------------------------------------------------------------------------------
+
+    private void DrainHealth()
+    {
+        SuitHealth -= drainSpeed * (Time.deltaTime);
+        SceneManager.Instance.UpdatePlayerHealth(playerColor, SuitHealth);
+        Debug.Log(suitHealth);
+    }
 
     private bool IsInCrater()
     {
@@ -152,6 +180,25 @@ public class Player : MonoBehaviour
                 overlappingCraters.Add(craterObject);
             }
         }
+    }
+
+
+    private void UpdatePlayerValuesInUI()
+    {
+        SceneManager.Instance.UpdatePlayerValues(playerColor, SuitHealth, FuelInventory, 50f);
+    }
+
+    private float getCurrentSpeed()
+    {
+        if (SuitHealth > lowThreshold)
+        {
+            return normalSpeed;
+        }
+        else if (SuitHealth > 0)
+        {
+            return medSpeed;
+        }
+        else return slowSpeed;
     }
 }
 

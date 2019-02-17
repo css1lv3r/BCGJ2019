@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIBarDiscrete : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int Capacity = 5;
+    [SerializeField] private Image[] displaySprites;
+    [SerializeField] private Sprite onSprite;
+    [SerializeField] private Sprite offSprite;
 
-    // Update is called once per frame
-    void Update()
+
+    public void UpdateDisplay (int newValue)
     {
-        
+        for (int i = 0; i < Capacity; ++i)
+        {
+            displaySprites[i].sprite = (newValue >= (i + 1)) ?onSprite:offSprite;
+        }
     }
 }
