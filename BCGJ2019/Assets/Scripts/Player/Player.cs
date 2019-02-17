@@ -205,10 +205,19 @@ public class Player : MonoBehaviour
         {
             bool succeededPlant = crater.GetComponent<Crater>().TryToPlant((playerColor == PlayerColor.Red));
             planted = succeededPlant || planted;
+            if (planted && crater.GetComponent<Crater>().isDry)
+                AudioManagerSpawner.instance.SwitchSFX("Shovel");
+            if (planted && !crater.GetComponent<Crater>().isDry)
+                AudioManagerSpawner.instance.SwitchSFX("Water");
 
             int harvestResult = (int)crater.GetComponent<Crater>().TryToHarvest(maxInventoryCapacity - fuelInventory);
             fuelInventory += harvestResult;
             harvested = harvested || (harvestResult > 0);
+            
+            if (harvested && crater.GetComponent<Crater>().isDry)
+                AudioManagerSpawner.instance.SwitchSFX("Plant Harvest");
+            if (harvested && !crater.GetComponent<Crater>().isDry)
+                AudioManagerSpawner.instance.SwitchSFX("Water Harvest");
         }
         Debug.Log("Planted: " + planted + "\nHarvested: " + harvested);
     }
@@ -267,6 +276,7 @@ public class Player : MonoBehaviour
         {
             ShipFuelInventory += FuelInventory;
             FuelInventory = 0;
+            AudioManagerSpawner.instance.SwitchSFX("Refuel");
         }
         else
         {
@@ -305,6 +315,7 @@ public class Player : MonoBehaviour
         if (SuitHealth < 100)
         {
             SuitHealth += suitRechargeSpeed*Time.deltaTime;
+            AudioManagerSpawner.instance.SwitchSFX("Power up");
         }
     }
 
