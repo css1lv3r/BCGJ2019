@@ -19,16 +19,25 @@ public class Asteroid : MonoBehaviour
         sprite.color = shadowA;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void HasHit()
     {
-        if (collision.gameObject.tag == "Player")
+        Collider2D[] hit;
+        Vector2  pos = sprite.transform.position;
+        hit = Physics2D.OverlapPointAll(pos);
+        int numHit = hit.Length;
+        for(int i = 0; i < numHit; i++)
         {
-            collision.gameObject.SendMessage("SuitHealth.set", 0);
-        }
-        
-        if (collision.gameObject.tag == "Crater")
-        {
-            collision.gameObject.SendMessage("resetGrowth");
+            if (hit[i].tag == "Player")
+            {
+                // hit[i].SendMessage("Injure");
+                Debug.Log("Hit player");
+            }
+
+            if (hit[i].tag == "Crater")
+            {
+                // hit[i].SendMessage("resetGrowth");
+                Debug.Log("Hit crater");
+            }
         }
     }
 
@@ -45,13 +54,20 @@ public class Asteroid : MonoBehaviour
 
         if (timer >= 18.2f && timer < 18.8f)
         {
-            AudioManagerSpawner.GetInstance().PlayEffect(impact_index);
+            // AudioManagerSpawner.GetInstance().PlayEffect(impact_index);
         }
 
-        if (timer > 21f)
+        if (timer >= 19.8f && timer < 20.2f)
+        {
+            HasHit();
+        }
+
+        if (timer > 20.2f)
         {
             shadowA.a = 0f;
             sprite.color = shadowA;
+            Debug.Log("Asteroid hit");
+            Destroy(gameObject);
         }
     }
 }
