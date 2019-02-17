@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SceneManager : MonoBehaviour
 {
+
+
+
     public static SceneManager Instance
     {
         get
@@ -13,8 +16,8 @@ public class SceneManager : MonoBehaviour
     }
 
     private static SceneManager instance;
-
-    private void Awake()
+    //----------------------------------------------------------------------------------------------------
+    void Awake()
     {
         if (instance == null) { instance = this; }
     }
@@ -28,5 +31,18 @@ public class SceneManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    //----------------------------------------------------------------------------------------------------
+    public void UpdatePlayerValues(PlayerColor pColor)
+    {
+        if (pColor == PlayerColor.Blue)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 }

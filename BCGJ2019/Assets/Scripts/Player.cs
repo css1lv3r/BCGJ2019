@@ -56,10 +56,10 @@ public class Player : MonoBehaviour
         //Debug.Log(normalizedDirection);
 
         //get interact input
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             UpdateOverlappingCraters();
-            Debug.Log(overlappingCraters.Count);
+            TryToInteract();
         }
         
 
@@ -113,20 +113,26 @@ public class Player : MonoBehaviour
     }
     //----------------------------------------------------------------------------------------------------
 
-     public bool TryToAddToInventory(int count)
+    public void TryToInteract()
     {
-        if ((fuelInventory + count) > maxInventoryCapacity)
+        bool planted = false;
+        bool harvested = false;
+        foreach (GameObject crater in overlappingCraters)
         {
-            return false;
-        }
-        else
-        {
-            ++fuelInventory;
-            return true;
-        }
+            bool succeededPlant = crater.GetComponent<Crater>().TryToPlant((playerColor == PlayerColor.Red));
+            planted = succeededPlant || planted;
 
+            int harvestResult = (int)crater.GetComponent<Crater>().TryToHarvest(maxInventoryCapacity - fuelInventory);
+            fuelInventory += harvestResult;
+            harvested = harvested || (harvestResult > 0);
+        }
+        Debug.Log("Planted: " + planted + "\nHarvested: " + harvested);
+        //Update UI
+        //SceneManager.Instance;
+        // Play Audio
+        // ????
     }
-
+   
     //----------------------------------------------------------------------------------------------------
 
     private bool IsInCrater()
@@ -138,7 +144,7 @@ public class Player : MonoBehaviour
     {
         overlappingCraters.Clear();
         Vector2 overlapPoint = new Vector2(overlapPosition.position.x, overlapPosition.position.y);
-        Debug.Log(allCraters.Length);
+        //Debug.Log(allCraters.Length);
         foreach(GameObject craterObject in allCraters)
         {
             if (craterObject.GetComponent<Collider2D>().OverlapPoint(overlapPoint))

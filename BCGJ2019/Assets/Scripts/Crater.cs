@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Crater : MonoBehaviour
 {
-    public bool isDry;
-    // lets us know whether dry crater or wet crater, determines Crater appearance
-    // can be accessed by Player also
+    public bool isDry;    // lets us know whether dry crater or wet crater, determines Crater appearance
+    public SpriteRenderer plantSprite;
+    public Sprite[] plantStateSprites;
+    public int fuelQuantity = 1;
 
-    private int growth=0; 
-    // 0 for unplanted, 1 for immature plants, 2 for ready-to-harvest
-    // is initialized to 0 (empty crater)
+    private int growth=0;    // 0 for unplanted, 1 for immature plants, 2 for ready-to-harvest
+    private float growthTimer = 0f;
+
+    private const float kGrowTime = 5f;
+
 
 
     // Start is called before the first frame update
@@ -24,10 +27,8 @@ public class Crater : MonoBehaviour
     void Update()
     {
         //TODO: specify time between growth intervals
-        if (growth==1)
-        {
-            incGrowth(); //matures the plant
-        }      
+        
+         tryIncGrowth(); //matures the plant   
     }
 
     // immediate swatch to sprite corresponding to current plant maturity
@@ -36,48 +37,67 @@ public class Crater : MonoBehaviour
         //TODO: find way to access sprite file path & find appropriate data type
         if (isDry) //if dry crater
         {
-            if (growth==0)
-            {
-                //update sprite to empty dry crater 
-            } else if (growth==1)
-            {
-                //update sprite to dry crater with buds
-            } else 
-            {
-                //update sprite to dry crater with mature plants
-            }
+            
         } else // if wet crater
         {
-            if (growth==0)
-            {
-                //update sprite to empty wet crater
-            } else if (growth==1)
-            {
-                //update sprite to crater with immature algae
-            } else
-            {
-                //update sprite to crater with mature algae
-            }
         }
+
+
+        //set plant growth sprite
+        plantSprite.sprite = plantStateSprites[growth];
     }
 
     // matures plant by one stage, or plants plant if empty crater
     // called in update with immature plants 
     // AND in Player when it interacts with ready to plant crater (tries to plant in empty crater)
-    public void incGrowth()
+    public void tryIncGrowth()
     {
-        if (growth < 2)
+        if (growth==1)
         {
-            growth++;
-            updateSprite();
+            growthTimer += Time.deltaTime;
+            if (growthTimer > kGrowTime)
+            {
+                ++growth;
+                updateSprite();
+            }
+            
         }
     }
+
+    public bool TryToPlant(bool needsDry)
+    {
+        if (growth == 0)
+        {
+            if (needsDry == isDry)
+            {
+                growth = 1;
+                updateSprite();
+                return true;
+            }
+            
+        }
+        return false;
+    }
+
+    public float TryToHarvest(float inventorySpace)
+    {
+        if ((growth == 2) && (inventorySpace >= fuelQuantity))
+        {
+            resetGrowth();
+            return fuelQuantity;
+        }
+        return 0f;
+    }
+
+
+
 
     // resets Crater plant growth stage to 0
     // should be called in a type of harvest function in Player
     public void resetGrowth()
     {
         growth = 0;
+        growthTimer = 0f;
         updateSprite();
     }
 
