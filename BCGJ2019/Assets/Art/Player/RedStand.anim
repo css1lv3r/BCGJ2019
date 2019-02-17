@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BlueWalk
+  m_Name: RedStand
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,15 +20,9 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
-    - time: 0.25
-      value: {fileID: 21300000, guid: eb56462c11585ca43afdf6199a5f8af9, type: 3}
+      value: {fileID: 21300000, guid: 79b94d36a1f14294485044140e0cc0e0, type: 3}
     - time: 0.5
-      value: {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
-    - time: 0.75
-      value: {fileID: 21300000, guid: 2c1aa8e778d99964b96db80c18a446c2, type: 3}
-    - time: 1
-      value: {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
+      value: {fileID: 21300000, guid: 79b94d36a1f14294485044140e0cc0e0, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -48,17 +42,14 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
-    - {fileID: 21300000, guid: eb56462c11585ca43afdf6199a5f8af9, type: 3}
-    - {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
-    - {fileID: 21300000, guid: 2c1aa8e778d99964b96db80c18a446c2, type: 3}
-    - {fileID: 21300000, guid: 32b70b7455e272f40ba07796943e1930, type: 3}
+    - {fileID: 21300000, guid: 79b94d36a1f14294485044140e0cc0e0, type: 3}
+    - {fileID: 21300000, guid: 79b94d36a1f14294485044140e0cc0e0, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.0166667
+    m_StopTime: 0.51666665
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
