@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 
 public class Player : MonoBehaviour
 {
@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
     public Animator animController;
     public Transform overlapPosition;
     public GameObject ship;
+
+    public Vector3 offscreenPosition = new Vector3(-100,0,0);
+    public Vector3 lastPosition;
+    public int launchTime = 3;
 
     public float SuitHealth
     {
@@ -45,9 +49,9 @@ public class Player : MonoBehaviour
 
     //------------------------------
 
-    const float slowSpeed = 10f;
-    const float medSpeed = 20f;
-    const float normalSpeed =50f;
+    const float slowSpeed = 20f;
+    const float medSpeed = 40f;
+    const float normalSpeed =70f;
 
     const float lowHealthThreshold = 30;
     const float highFuelThreshold = 95;
@@ -58,9 +62,12 @@ public class Player : MonoBehaviour
     //------------------------------
     private float suitHealth = 100f;
     private int fuelInventory;
-    private float shipFuelInventory = 20;
+    private float shipFuelInventory = 100;
     private int maxInventoryCapacity = 5;
-    private bool isNearShip;
+    private bool isInShip = false;
+
+    private float launchTimer;
+    private bool tryingToLaunch = false;
 
 
 
@@ -91,7 +98,7 @@ public class Player : MonoBehaviour
         DrainHealth();
         DrainShip();
 
-        if (checkNearShip())
+        if (checkNearShip() || isInShip)
         {
             TryRechargeSuit();
         }
@@ -167,6 +174,7 @@ public class Player : MonoBehaviour
             {
                 TryOffloadFuel();
             }
+            TryToInteractWithShip();
         }
         
 
@@ -205,18 +213,32 @@ public class Player : MonoBehaviour
         Debug.Log("Planted: " + planted + "\nHarvested: " + harvested);
     }
 
+    private void TryToInteractWithShip()
+    {
+        if (isInShip)
+        {
+            TryExitShip();
+        }
+        else
+        {
+            TryEnterShip();
+        }
+        
+
+    }
+       
 
     private void DrainHealth()
     {
         SuitHealth -= suitDrainSpeed * (Time.deltaTime);
-        SceneManager.Instance.UpdatePlayerHealth(playerColor, SuitHealth);
-        Debug.Log(suitHealth);
+        LevelManager.Instance.UpdatePlayerHealth(playerColor, SuitHealth);
+        //Debug.Log(suitHealth);
     }
 
     private void DrainShip()
     {
         ShipFuelInventory -= fuelDrainSpeed*Time.deltaTime;
-        SceneManager.Instance.UpdateShipFuel(playerColor, ShipFuelInventory);
+        LevelManager.Instance.UpdateShipFuel(playerColor, ShipFuelInventory);
     }
 
     private bool IsInCrater()
@@ -256,7 +278,7 @@ public class Player : MonoBehaviour
 
     private void UpdatePlayerValuesInUI()
     {
-        SceneManager.Instance.UpdatePlayerValues(playerColor, SuitHealth, FuelInventory, ShipFuelInventory);
+        LevelManager.Instance.UpdatePlayerValues(playerColor, SuitHealth, FuelInventory, ShipFuelInventory);
     }
 
     private float getCurrentSpeed()
@@ -283,6 +305,33 @@ public class Player : MonoBehaviour
         if (SuitHealth < 100)
         {
             SuitHealth += suitRechargeSpeed*Time.deltaTime;
+        }
+    }
+
+    private void TryEnterShip()
+    {
+        if (checkNearShip() && ShipFuelInventory > highFuelThreshold)
+        {
+            lastPosition = transform.position;
+            transform.position = offscreenPosition;
+            isInShip = true;
+        }
+    }
+
+    private void ExitOrLaunch()
+    {
+        if (Input.GetButton("Interact_"+(int)playerColor))
+        {
+
+        }
+    }
+
+    private void TryExitShip()
+    {
+        if (isInShip)
+        {
+            transform.position = lastPosition;
+            isInShip = false;
         }
     }
 }

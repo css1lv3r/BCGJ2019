@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SceneManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
 
     [SerializeField] private UIBarFill blueSuitHealthBar;
@@ -13,7 +13,7 @@ public class SceneManager : MonoBehaviour
     [SerializeField] private UIBarDiscrete redInventoryBar;
     [SerializeField] private UIBarFill redShipFuelBar;
 
-    public static SceneManager Instance
+    public static LevelManager Instance
     {
         get
         {
@@ -21,7 +21,7 @@ public class SceneManager : MonoBehaviour
         }
     }
 
-    private static SceneManager instance;
+    private static LevelManager instance;
     //----------------------------------------------------------------------------------------------------
     void Awake()
     {

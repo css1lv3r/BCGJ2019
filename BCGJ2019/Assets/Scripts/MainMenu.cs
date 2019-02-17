@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class MainMenu : MonoBehaviour
 {
+    public static MainMenu Instance;
+    public MenuPlayer bluePlayer;
+    public MenuPlayer redPlayer;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }
