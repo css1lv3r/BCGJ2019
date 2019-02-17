@@ -8,6 +8,7 @@ public class Asteroid : MonoBehaviour
     private float timer = 0.0f;
     public SpriteRenderer sprite;
     private Color shadowA;
+    private const int impact_index = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -42,9 +43,9 @@ public class Asteroid : MonoBehaviour
             sprite.color = shadowA;
         }
 
-        if (timer >= 18.5f)
+        if (timer >= 18.2f && timer < 18.8f)
         {
-            // AudioManager.instance.Play();
+            AudioManagerSpawner.GetInstance().PlayEffect(impact_index);
         }
 
         if (timer > 21f)
