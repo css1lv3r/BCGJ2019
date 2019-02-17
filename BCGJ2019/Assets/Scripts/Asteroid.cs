@@ -29,13 +29,13 @@ public class Asteroid : MonoBehaviour
         {
             if (hit[i].tag == "Player")
             {
-                // hit[i].SendMessage("Injure");
+                hit[i].SendMessage("Injure");
                 Debug.Log("Hit player");
             }
 
             if (hit[i].tag == "Crater")
             {
-                // hit[i].SendMessage("resetGrowth");
+                hit[i].SendMessage("resetGrowth");
                 Debug.Log("Hit crater");
             }
         }
@@ -45,6 +45,8 @@ public class Asteroid : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+
+        // using timer to fade in the shadow
         if (timer > 10f && sprite.color.a < 1.0f)
         {
             float t = (timer - 10f) / countdown;
@@ -52,16 +54,20 @@ public class Asteroid : MonoBehaviour
             sprite.color = shadowA;
         }
 
-        if (timer >= 18.2f && timer < 18.8f)
+        // start playing the sound effect roughly 1.5s before impact
+        // leaving a margin on error
+        if (timer >= 18.5f && timer < 18.6f)
         {
-            // AudioManagerSpawner.GetInstance().PlayEffect(impact_index);
+            AudioManagerSpawner.instance.SwitchSFX("AImpact");
         }
 
-        if (timer >= 19.8f && timer < 20.2f)
+        // check if the asteroid has hit anything
+        if (timer >= 19.9f && timer < 20f)
         {
             HasHit();
         }
 
+        // Get rid of asteroid
         if (timer > 20.2f)
         {
             shadowA.a = 0f;
