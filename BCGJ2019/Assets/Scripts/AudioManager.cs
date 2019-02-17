@@ -4,33 +4,19 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    /*boolean fields for representing different critical game events: <-- not sure about this
-     Audio Source
-     Volume
-    */
-    public AudioClip BGM;
-
+    public AudioClip[] BGM;
     private AudioSource source;
-    private float volHighRange = 1.0f;
     
     private AudioSource effectSource;
-    private AudioClip[] clips;
+    public AudioClip[] clips;
 
     // Start is called before the first frame update
     void Start()
     {
-    }
-
-    private void Awake()
-    {
         source = GetComponent<AudioSource>();
         effectSource = GetComponent<AudioSource>();
-        // TODO: Actually load the sound
-        clips = new AudioClip[] {(AudioClip)Resources.Load(""),
-                                 (AudioClip)Resources.Load(""),
-                                 (AudioClip)Resources.Load(""),
-                                 (AudioClip)Resources.Load(""),
-                                 (AudioClip)Resources.Load(""),};
+        PlayBGM(0);
+        Debug.Log("Playing Main Menu BGM");
     }
 
     // Update is called once per frame
@@ -38,18 +24,82 @@ public class AudioManager : MonoBehaviour
     {
         
     }
-
-    public void PlayEffect(int clipIndex)
+    
+    public void PlaySFX(int clipIndex)
     {
-        effectSource.clip = clips[clipIndex];
-        if (!effectSource.isPlaying)
+        effectSource.PlayOneShot(clips[clipIndex]);
+        Debug.Log("Playing:" + clipIndex);
+    }
+
+    public void SwitchSFX(string s)
+    {
+        switch (s)
         {
-            effectSource.Play();
+            case "AImpact":
+                PlaySFX(0);
+                break;
+            case "Crash":
+                PlaySFX(1);
+                break;
+            case "Refuel":
+                PlaySFX(2);
+                break;
+            case "Sputter":
+                PlaySFX(3);
+                break;
+            case "Rocket":
+                PlaySFX(4);
+                break;
+            case "Take off":
+                PlaySFX(5);
+                break;
+            case "Power up":
+                PlaySFX(6);
+                break;
+            case "Bicker":
+                PlaySFX(7);
+                break;
+            case "Tada":
+                PlaySFX(8);
+                break;
+            case "Uhoh":
+                PlaySFX(9);
+                break;
+            case "Plant Harvest":
+                PlaySFX(10);
+                break;
+            case "Shovel":
+                PlaySFX(11);
+                break;
+            case "Water":
+                PlaySFX(12);
+                break;
+            case "Water Harvest":
+                PlaySFX(13);
+                break;
         }
     }
 
-    void playBGM()
+    public void SwitchBGM(string s)
     {
+        switch (s)
+        {
+            case "Main Menu":
+                PlayBGM(0);
+                break;
+            case "Theme 1":
+                PlayBGM(1);
+                break;
+            case "Theme 2":
+                PlayBGM(2);
+                break;
+        }
+    }
+
+    void PlayBGM(int bgm)
+    {
+        source.clip = BGM[bgm];
+        source.loop = true;
         source.Play();
     }
 }

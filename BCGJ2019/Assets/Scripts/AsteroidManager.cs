@@ -22,7 +22,7 @@ public class AsteroidManager : MonoBehaviour
 
     void SetCountDown()
     {
-        float num = 20.0f; // Random.Range(10.0f, 15.0f); commenting out for testing
+        float num = 20.0f;
         countdown = num;
     }
 

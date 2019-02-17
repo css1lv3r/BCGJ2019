@@ -4,20 +4,16 @@ using UnityEngine;
 
 public class AudioManagerSpawner : MonoBehaviour
 {
-    private static AudioManager instance = null;
+    public static AudioManager instance = null;
+    public GameObject AudioManager;
 
     private void Awake()
     {
         if (instance == null)
         {
-            instance = new AudioManager();
+            instance = GameObject.Instantiate(AudioManager, transform.position, Quaternion.identity).GetComponent<AudioManager>();
         }
         DontDestroyOnLoad(instance);
-    }
-
-    public static AudioManager GetInstance()
-    {
-        return instance;
     }
 
     // Start is called before the first frame update

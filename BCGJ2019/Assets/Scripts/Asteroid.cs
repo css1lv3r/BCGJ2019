@@ -19,16 +19,25 @@ public class Asteroid : MonoBehaviour
         sprite.color = shadowA;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void HasHit()
     {
-        if (collision.gameObject.tag == "Player")
+        Collider2D[] hit;
+        Vector2  pos = sprite.transform.position;
+        hit = Physics2D.OverlapPointAll(pos);
+        int numHit = hit.Length;
+        for(int i = 0; i < numHit; i++)
         {
-            collision.gameObject.SendMessage("SuitHealth.set", 0);
-        }
-        
-        if (collision.gameObject.tag == "Crater")
-        {
-            collision.gameObject.SendMessage("resetGrowth");
+            if (hit[i].tag == "Player")
+            {
+                hit[i].SendMessage("Injure");
+                Debug.Log("Hit player");
+            }
+
+            if (hit[i].tag == "Crater")
+            {
+                hit[i].SendMessage("resetGrowth");
+                Debug.Log("Hit crater");
+            }
         }
     }
 
@@ -36,6 +45,8 @@ public class Asteroid : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+
+        // using timer to fade in the shadow
         if (timer > 10f && sprite.color.a < 1.0f)
         {
             float t = (timer - 10f) / countdown;
@@ -43,15 +54,26 @@ public class Asteroid : MonoBehaviour
             sprite.color = shadowA;
         }
 
-        if (timer >= 18.2f && timer < 18.8f)
+        // start playing the sound effect roughly 1.5s before impact
+        // leaving a margin on error
+        if (timer >= 18.5f && timer < 18.6f)
         {
-            AudioManagerSpawner.GetInstance().PlayEffect(impact_index);
+            AudioManagerSpawner.instance.SwitchSFX("AImpact");
         }
 
-        if (timer > 21f)
+        // check if the asteroid has hit anything
+        if (timer >= 19.9f && timer < 20f)
+        {
+            HasHit();
+        }
+
+        // Get rid of asteroid
+        if (timer > 20.2f)
         {
             shadowA.a = 0f;
             sprite.color = shadowA;
+            Debug.Log("Asteroid hit");
+            Destroy(gameObject);
         }
     }
 }
