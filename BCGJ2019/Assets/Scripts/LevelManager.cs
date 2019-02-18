@@ -103,6 +103,7 @@ public class LevelManager : MonoBehaviour
 
     public void DisplayTimer(PlayerColor pc, int time)
     {
+        Debug.Log("Displaying time: " + time);
         switch (pc)
         {
             case PlayerColor.Blue:

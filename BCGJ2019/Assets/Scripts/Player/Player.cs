@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
     //------------------------------
     private float suitHealth = 100f;
     private int fuelInventory;
-    private float shipFuelInventory = 20;
+    private float shipFuelInventory = 10;
     private int maxInventoryCapacity = 5;
     private bool isInShip = false;
     private bool tryingToEnterShip = false;
@@ -360,6 +360,7 @@ public class Player : MonoBehaviour
         {
             isInShip = true;
             tryingToEnterShip = false;
+            LevelManager.Instance.DisplayTimer(playerColor, -1);
         }
     }
 
@@ -386,11 +387,11 @@ public class Player : MonoBehaviour
 
     private void CountDownToLaunch()
     {
-
+        launchTimerStarted = true;
         launchTimer += Time.deltaTime;
         if (IsTryingLaunch)
         {
-            LevelManager.Instance.DisplayTimer(playerColor, (int)(launchTime-launchTimer));
+            LevelManager.Instance.DisplayTimer(playerColor, Mathf.RoundToInt(launchTime-launchTimer));
         }
     }
 
