@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //using UnityEditor.Animations;
 
 public class Player : MonoBehaviour
@@ -42,8 +43,16 @@ public class Player : MonoBehaviour
         set
         {
             shipFuelInventory = value;
-            if (shipFuelInventory > 100) { suitHealth = 100; }
-            if (shipFuelInventory < 0) { suitHealth = 0; }
+            if (shipFuelInventory > 100) { ShipFuelInventory = 100; }
+            if (shipFuelInventory < 0) { ShipFuelInventory = 0; }
+        }
+    }
+
+    public bool IsTryingLaunch
+    {
+        get
+        {
+            return launchTimerStarted;
         }
     }
 
@@ -65,9 +74,10 @@ public class Player : MonoBehaviour
     private float shipFuelInventory = 100;
     private int maxInventoryCapacity = 5;
     private bool isInShip = false;
+    private bool tryingToEnterShip = false;
 
     private float launchTimer;
-    private bool tryingToLaunch = false;
+    private bool launchTimerStarted = false;
 
 
 
@@ -107,11 +117,31 @@ public class Player : MonoBehaviour
         //Debug.Log(normalizedDirection);
 
         //get interact input
-        if (Input.GetButtonDown("Interact_"+(int)playerColor))
+        if (Input.GetButtonDown("Interact_" + (int)playerColor))
         {
+            
             UpdateOverlappingCraters();
             TryToInteract();
+
+
         }
+        else if (Input.GetButton("Interact_" + (int)playerColor)) //if they're holding and not letting go
+        {
+
+            CountDownToLaunch();
+        }else if (Input.GetButtonUp("Interact_" + (int)playerColor)) //if button released
+        {
+            if (isInShip)
+            {
+                TryStopLaunch();
+            }
+            if (tryingToEnterShip)
+            {
+                EnterShip();
+            }
+            
+        }
+            
         
         
 
@@ -224,12 +254,7 @@ public class Player : MonoBehaviour
 
     private void TryToInteractWithShip()
     {
-        if (isInShip)
-        {
-            TryExitShip();
-        }
-        else
-        {
+        if (!(isInShip || tryingToEnterShip)){
             TryEnterShip();
         }
         
@@ -325,16 +350,77 @@ public class Player : MonoBehaviour
         {
             lastPosition = transform.position;
             transform.position = offscreenPosition;
-            isInShip = true;
+            tryingToEnterShip = true;
         }
     }
 
-    private void ExitOrLaunch()
+    private void EnterShip()
     {
-        if (Input.GetButton("Interact_"+(int)playerColor))
+        if (tryingToEnterShip)
         {
+            isInShip = true;
+            tryingToEnterShip = false;
+        }
+    }
+
+    private void TryStopLaunch()
+    {
+        Debug.Log("Launch timer: " + launchTimer);
+        if (launchTimer < launchTime)
+        {
+            //Cancel launch
+            launchTimerStarted = false;
+            launchTimer = 0f;
+            LevelManager.Instance.DisplayTimer(playerColor, -1);
+            if (launchTimer < 1f)
+            {
+                TryExitShip();
+            }
+            //Play appropriate sound
+        }
+        else //try to launch anyways
+        {
+            CheckLaunchSuccess();
+        }
+    }
+
+    private void CountDownToLaunch()
+    {
+
+        launchTimer += Time.deltaTime;
+        if (IsTryingLaunch)
+        {
+            LevelManager.Instance.DisplayTimer(playerColor, (int)(launchTime-launchTimer));
+        }
+    }
+
+    private void CheckLaunchSuccess()
+    {
+        bool success = (LevelManager.Instance.GetOtherPlayer(playerColor)).IsTryingLaunch;
+        Debug.Log("Try to launch: " + success);
+        //if other player is also launching
+        if (success)
+        {
+            LevelManager.Instance.EndGameTriggered = true;
+            SceneManager.LoadSceneAsync("EndGame");
+            //trigger end game
+        }
+        else
+        {
+            FailToLaunch();
 
         }
+        //if not
+
+
+    }
+
+    private void FailToLaunch()
+    {
+        launchTimerStarted = false;
+        launchTimer = 0;
+        TryStopLaunch();
+        ShipFuelInventory = 0;
     }
 
     private void TryExitShip()
