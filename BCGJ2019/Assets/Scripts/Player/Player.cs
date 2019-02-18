@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
     //------------------------------
     private float suitHealth = 100f;
     private int fuelInventory;
-    private float shipFuelInventory = 100;
+    private float shipFuelInventory = 20;
     private int maxInventoryCapacity = 5;
     private bool isInShip = false;
     private bool tryingToEnterShip = false;
@@ -402,7 +402,7 @@ public class Player : MonoBehaviour
         if (success)
         {
             LevelManager.Instance.EndGameTriggered = true;
-            SceneManager.LoadSceneAsync("EndGame");
+            SceneManager.LoadSceneAsync("MainMenu");
             //trigger end game
         }
         else

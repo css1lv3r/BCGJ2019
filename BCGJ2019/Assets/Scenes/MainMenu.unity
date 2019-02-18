@@ -5097,6 +5097,11 @@ MonoBehaviour:
   redSuitHealthBar: {fileID: 0}
   redInventoryBar: {fileID: 0}
   redShipFuelBar: {fileID: 0}
+  blueShipTimer: {fileID: 0}
+  redShipTimer: {fileID: 0}
+  redPlayer: {fileID: 0}
+  bluePlayer: {fileID: 0}
+  EndGameTriggered: 0
 --- !u!4 &790197360
 Transform:
   m_ObjectHideFlags: 0
@@ -5483,7 +5488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8539edd21f55d7469d8ef040ccf5410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneToLoad: Cutscene
+  SceneToLoad: Gameplay
   timeBuffer: 1
   buttonSprite: {fileID: 1557175413}
   particleObject: {fileID: 34952917}
