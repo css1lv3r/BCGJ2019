@@ -12,7 +12,7 @@ public class Crater : MonoBehaviour
     private int growth=0;    // 0 for unplanted, 1 for immature plants, 2 for ready-to-harvest
     private float growthTimer = 0f;
 
-    private const float kGrowTime = 5f;
+    private const float kGrowTime = 20f;
 
 
 
